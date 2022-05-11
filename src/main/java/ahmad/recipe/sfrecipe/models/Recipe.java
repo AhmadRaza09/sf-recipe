@@ -28,6 +28,8 @@ public class Recipe {
     private Integer servings;
     private String source;
     private String url;
+
+    @Lob
     private String directions;
 
     //todo add
@@ -152,5 +154,10 @@ public class Recipe {
 
     public void setCategories(Set<Category> categories) {
         this.categories = categories;
+    }
+
+    public void addIngredient(Ingredient ingredient)
+    {
+        ingredients.add(ingredient);
     }
 }
