@@ -1,5 +1,7 @@
 package ahmad.recipe.sfrecipe.service;
 
+import ahmad.recipe.sfrecipe.converters.RecipeCommandToRecipe;
+import ahmad.recipe.sfrecipe.converters.RecipeToRecipeCommand;
 import ahmad.recipe.sfrecipe.models.Recipe;
 import ahmad.recipe.sfrecipe.repostories.RecipeRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,10 +24,16 @@ class RecipeServiceImplTest {
     @Mock
     RecipeRepository recipeRepository;
 
+    @Mock
+    RecipeToRecipeCommand recipeToRecipeCommand;
+
+    @Mock
+    RecipeCommandToRecipe recipeCommandToRecipe;
+
     @BeforeEach
     void setUp() {
         MockitoAnnotations.initMocks(this);
-        recipeService = new RecipeServiceImpl(recipeRepository);
+        recipeService = new RecipeServiceImpl(recipeRepository, recipeCommandToRecipe, recipeToRecipeCommand);
     }
 
     @Test
