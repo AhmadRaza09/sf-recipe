@@ -2,6 +2,7 @@ package ahmad.recipe.sfrecipe.controllers;
 
 import ahmad.recipe.sfrecipe.commands.RecipeCommand;
 import ahmad.recipe.sfrecipe.service.RecipeService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+@Slf4j
 @Controller
 public class RecipeController {
 
@@ -53,4 +55,13 @@ public class RecipeController {
         return "redirect:/recipe/" + savedRecipe.getId()+ "/show";
     }
 
+    @RequestMapping(value = {"recipe/{id}/delete"},method = RequestMethod.GET)
+    public String deleteById(@PathVariable String id)
+    {
+        log.debug("Deleting id: " + id);
+
+        recipeService.deleteById(Long.valueOf(id));
+
+        return "redirect:/";
+    }
 }
