@@ -5,4 +5,6 @@ import ahmad.recipe.sfrecipe.commands.IngredientCommand;
 public interface IngredientService {
 
     IngredientCommand findByRecipeIdAndIngredientId(Long recipeId, Long ingredientId);
+
+    IngredientCommand savedIngredientCommand(IngredientCommand ingredientCommand);
 }
