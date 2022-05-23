@@ -117,4 +117,15 @@ class IngredientControllerTest {
                 .andExpect(MockMvcResultMatchers.status().is3xxRedirection())
                 .andExpect(MockMvcResultMatchers.view().name("redirect:/recipe/2/ingredient/3/show"));
     }
+
+    @Test
+    public void testDeleteIngredient() throws Exception{
+
+        //then
+        mockMvc.perform(MockMvcRequestBuilders.get("/recipe/2/ingredient/3/delete"))
+        .andExpect(MockMvcResultMatchers.status().is3xxRedirection())
+        .andExpect(MockMvcResultMatchers.view().name("redirect:/recipe/2/ingredients"));
+
+        Mockito.verify(ingredientService, Mockito.times(1)).deleteById(anyLong(), anyLong());
+    }
 }

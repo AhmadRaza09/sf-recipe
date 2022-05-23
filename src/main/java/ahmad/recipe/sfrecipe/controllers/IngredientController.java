@@ -29,7 +29,7 @@ public class IngredientController {
         this.unitOfMeasureService = unitOfMeasureService;
     }
 
-    @RequestMapping(value = {"recipe/{recipeId}/ingredients"}, method = RequestMethod.GET)
+    @RequestMapping(value = {"/recipe/{recipeId}/ingredients"}, method = RequestMethod.GET)
     public String listIngredient(@PathVariable String recipeId, Model model)
     {
         log.debug("Getting ingredient list for recipe recipeId: " + recipeId);
@@ -54,7 +54,7 @@ public class IngredientController {
     }
 
 
-    @RequestMapping(value = {"recipe/{recipeId}/ingredient/new"}, method = RequestMethod.GET)
+    @RequestMapping(value = {"/recipe/{recipeId}/ingredient/new"}, method = RequestMethod.GET)
     public String newIngredient(@PathVariable String recipeId, Model model){
 
         log.debug("Add new Ingredient");
@@ -91,7 +91,7 @@ public class IngredientController {
     }
 
 
-    @RequestMapping(value = {"recipe/{recipeId}/ingredient"}, method = RequestMethod.POST)
+    @RequestMapping(value = {"/recipe/{recipeId}/ingredient"}, method = RequestMethod.POST)
     public String saveorUpdate(@ModelAttribute IngredientCommand ingredientCommand)
     {
         IngredientCommand savedCommand = ingredientService.savedIngredientCommand(ingredientCommand);
@@ -100,6 +100,15 @@ public class IngredientController {
         log.debug("saved ingredient id: " + savedCommand.getId());
 
         return "redirect:/recipe/" + savedCommand.getRecipeId() + "/ingredient/" + savedCommand.getId() + "/show";
+    }
+
+    @RequestMapping(value = {"/recipe/{recipeId}/ingredient/{ingredientId}/delete"}, method = RequestMethod.GET)
+    public String deleteIngredient(@PathVariable String recipeId, @PathVariable String ingredientId){
+        log.debug("deleting ingredient id: " + ingredientId);
+
+        ingredientService.deleteById(Long.valueOf(recipeId), Long.valueOf(ingredientId));
+
+        return "redirect:/recipe/" + recipeId + "/ingredients";
     }
 
 }
