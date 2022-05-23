@@ -1,6 +1,8 @@
 package ahmad.recipe.sfrecipe.controllers;
 
 import ahmad.recipe.sfrecipe.commands.IngredientCommand;
+import ahmad.recipe.sfrecipe.commands.RecipeCommand;
+import ahmad.recipe.sfrecipe.commands.UnitOfMeasureCommand;
 import ahmad.recipe.sfrecipe.service.IngredientService;
 import ahmad.recipe.sfrecipe.service.RecipeService;
 import ahmad.recipe.sfrecipe.service.UnitOfMeasureService;
@@ -49,6 +51,28 @@ public class IngredientController {
                         , Long.valueOf(ingredientId)));
 
         return "recipe/ingredient/show";
+    }
+
+
+    @RequestMapping(value = {"recipe/{recipeId}/ingredient/new"}, method = RequestMethod.GET)
+    public String newIngredient(@PathVariable String recipeId, Model model){
+
+        log.debug("Add new Ingredient");
+        //make sure we have a good id value
+        RecipeCommand recipeCommand = recipeService.findCommandById(Long.valueOf(recipeId));
+        //todo raise exception if null
+
+        //need to return back parent id for hidden form property
+        IngredientCommand ingredientCommand = new IngredientCommand();
+        ingredientCommand.setRecipeId(Long.valueOf(recipeId));
+        model.addAttribute("ingredient", ingredientCommand);
+
+        //init uom
+        ingredientCommand.setUom(new UnitOfMeasureCommand());
+
+        model.addAttribute("uomList",  unitOfMeasureService.listAllUoms());
+
+        return "recipe/ingredient/ingredientform";
     }
 
     @RequestMapping(value = {"/recipe/{recipeId}/ingredient/{ingredientId}/update"}
