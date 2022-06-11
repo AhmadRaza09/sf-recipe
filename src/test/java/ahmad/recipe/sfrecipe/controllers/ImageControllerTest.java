@@ -8,12 +8,15 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
 class ImageControllerTest {
@@ -41,14 +44,14 @@ class ImageControllerTest {
         RecipeCommand command = new RecipeCommand();
         command.setId(1L);
 
-        when(recipeService.findCommandById(Mockito.anyLong())).thenReturn(command);
+        when(recipeService.findCommandById(anyLong())).thenReturn(command);
 
         //when
         mockMvc.perform(MockMvcRequestBuilders.get("/recipe/1/image"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.model().attributeExists("recipe"));
 
-        Mockito.verify(recipeService, Mockito.times(1)).findCommandById(Mockito.anyLong());
+        Mockito.verify(recipeService, Mockito.times(1)).findCommandById(anyLong());
     }
 
     @Test
@@ -61,6 +64,36 @@ class ImageControllerTest {
                 .andExpect(MockMvcResultMatchers.status().is3xxRedirection())
                 .andExpect(MockMvcResultMatchers.header().string("Location", "/recipe/1/show"));
 
-        Mockito.verify(imageService, Mockito.times(1)).saveImageFile(Mockito.anyLong(), Mockito.any());
+        Mockito.verify(imageService, Mockito.times(1)).saveImageFile(anyLong(), Mockito.any());
+    }
+
+    @Test
+    public void renderImageFromDB() throws Exception {
+
+        //given
+        RecipeCommand command = new RecipeCommand();
+        command.setId(1L);
+
+        String s = "fake image text";
+        Byte[] bytesBoxed = new Byte[s.getBytes().length];
+
+        int i = 0;
+
+        for (byte primByte : s.getBytes()){
+            bytesBoxed[i++] = primByte;
+        }
+
+        command.setImage(bytesBoxed);
+
+        when(recipeService.findCommandById(anyLong())).thenReturn(command);
+
+        //when
+        MockHttpServletResponse response = mockMvc.perform(MockMvcRequestBuilders.get("/recipe/1/recipeimage"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andReturn().getResponse();
+
+        byte[] reponseBytes = response.getContentAsByteArray();
+
+        assertEquals(s.getBytes().length, reponseBytes.length);
     }
 }
