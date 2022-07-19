@@ -3,6 +3,7 @@ package ahmad.recipe.sfrecipe.service;
 import ahmad.recipe.sfrecipe.commands.RecipeCommand;
 import ahmad.recipe.sfrecipe.converters.RecipeCommandToRecipe;
 import ahmad.recipe.sfrecipe.converters.RecipeToRecipeCommand;
+import ahmad.recipe.sfrecipe.exceptions.NotFoundException;
 import ahmad.recipe.sfrecipe.models.Recipe;
 import ahmad.recipe.sfrecipe.repostories.RecipeRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 @Slf4j
@@ -42,7 +44,13 @@ public class RecipeServiceImpl implements RecipeService {
 
     @Override
     public Recipe findById(Long id) {
-        return recipeRepository.findById(id).orElse(null);
+        Optional<Recipe> recipeOptional = recipeRepository.findById(id);
+
+        if(!recipeOptional.isPresent()){
+            throw new NotFoundException("Recipe Not Found");
+        }
+
+        return recipeOptional.get();
     }
 
     @Override
