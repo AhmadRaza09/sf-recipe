@@ -1,6 +1,7 @@
 package ahmad.recipe.sfrecipe.controllers;
 
 import ahmad.recipe.sfrecipe.commands.RecipeCommand;
+import ahmad.recipe.sfrecipe.exceptions.NotFoundException;
 import ahmad.recipe.sfrecipe.models.Recipe;
 import ahmad.recipe.sfrecipe.service.RecipeService;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,6 +17,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 
 public class RecipeControllerTest {
@@ -47,6 +49,16 @@ public class RecipeControllerTest {
         mockMvc.perform(MockMvcRequestBuilders.get("/recipe/1/show"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.view().name("recipe/show"));
+
+    }
+
+    @Test
+    void testGetRecipeNotFound() throws Exception{
+        when(recipeService.findCommandById(anyLong())).thenThrow(NotFoundException.class);
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/recipe/1/show"))
+                .andExpect(MockMvcResultMatchers.status().isNotFound())
+                .andExpect(MockMvcResultMatchers.view().name("404error"));
 
     }
 
